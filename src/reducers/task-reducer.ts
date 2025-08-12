@@ -8,8 +8,13 @@ export type TaskState = {
     tasks: Task[];
 };
 
+const handleLocal = () => {
+    const storage = localStorage.getItem("tasks");
+    return storage ? JSON.parse(storage) : [];
+};
+
 export const initialState = {
-    tasks: [],
+    tasks: handleLocal(),
 };
 
 export const taskReducer = (state: TaskState = initialState, action: TaskActions) => {

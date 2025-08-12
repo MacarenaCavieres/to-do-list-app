@@ -1,16 +1,18 @@
 import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import { v4 as uuidv4 } from "uuid";
-import type { Task } from "../types";
+import { ItemStatus, type Task } from "../types";
 import { useTask } from "../hooks/useTask";
 
-type Props = {};
-function TaskForm({}: Props) {
+function TaskForm() {
     const { dispatch } = useTask();
 
-    const initialTask = {
+    const initialTask: Task = {
         id: uuidv4(),
+        status: ItemStatus.ToStart,
         created: new Date().toLocaleString(),
         endDate: "",
+        started: "",
+        modified: new Date().toLocaleString(),
         task: "",
     };
 
@@ -20,10 +22,15 @@ function TaskForm({}: Props) {
         setTask({
             ...task,
             [e.target.id]: e.target.value,
+            status: e.target.id === "started" || task.started ? ItemStatus.Pending : ItemStatus.ToStart,
         });
     };
 
-    const isFormNotValid = useMemo(() => Object.values(task).includes(""), [task]);
+    const isFormNotValid = useMemo(() => {
+        const isTaskNotValid = task.task.trim() === "";
+        const isEndDateNotValid = task.endDate.trim() === "";
+        return isTaskNotValid || isEndDateNotValid;
+    }, [task]);
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -51,17 +58,34 @@ function TaskForm({}: Props) {
                 value={task.task}
             ></textarea>
 
-            <label htmlFor="endDate" className="text-xl">
-                Agregue una fecha de término
-            </label>
-            <input
-                id="endDate"
-                name="endDate"
-                type="date"
-                className="border border-black rounded-lg focus:outline-none p-2 w-6/12 mb-5 my-2"
-                onChange={handleChange}
-                value={task.endDate}
-            />
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <label htmlFor="started" className="text-xl">
+                        Agregue una fecha de inicio
+                    </label>
+                    <input
+                        id="started"
+                        name="started"
+                        type="date"
+                        className="border border-black rounded-lg focus:outline-none p-2 mb-5 my-2 w-full"
+                        onChange={handleChange}
+                        value={task.started}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="endDate" className="text-xl">
+                        Agregue una fecha de término
+                    </label>
+                    <input
+                        id="endDate"
+                        name="endDate"
+                        type="date"
+                        className="border border-black rounded-lg focus:outline-none p-2 mb-5 my-2 w-full"
+                        onChange={handleChange}
+                        value={task.endDate}
+                    />
+                </div>
+            </div>
 
             <button
                 type="submit"
