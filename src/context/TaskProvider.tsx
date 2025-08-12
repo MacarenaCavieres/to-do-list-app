@@ -5,9 +5,9 @@ import { initialState, taskReducer } from "../reducers/task-reducer";
 type Props = {
     children: ReactNode;
 };
-function TaskProvider({ children }: Props) {
+export const TaskProvider = ({ children }: Props) => {
     const [state, dispatch] = useReducer(taskReducer, initialState);
 
     return <TaskContext.Provider value={{ state, dispatch }}>{children}</TaskContext.Provider>;
-}
+};
 export default TaskProvider;
