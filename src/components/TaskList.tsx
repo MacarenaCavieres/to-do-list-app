@@ -3,10 +3,10 @@ import { useTask } from "../hooks/useTask";
 import { ItemStatus } from "../types";
 
 function TaskList() {
-    const { state } = useTask();
+    const { state, dispatch } = useTask();
 
     return (
-        <ul className="mt-16 overflow-y-auto h-96">
+        <ul className="max-h-customHeight overflow-y-auto">
             {state.tasks.map((item) => (
                 <li
                     key={item.id}
@@ -15,28 +15,38 @@ function TaskList() {
                     <div>
                         <p>
                             Estado:{" "}
-                            <span className="font-semibold text-blue-700">
+                            <span
+                                className={`font-semibold ${
+                                    item.status === ItemStatus.ToStart
+                                        ? "text-blue-600"
+                                        : item.status === ItemStatus.InProgress
+                                        ? "text-cyan-800"
+                                        : item.status === ItemStatus.Pending &&
+                                          item.started.split(",")[0] !==
+                                              new Date().toLocaleString().split(",")[0] &&
+                                          new Date(item.endDate).getDate() > new Date().getDate()
+                                        ? "text-yellow-600"
+                                        : item.status === ItemStatus.Finished
+                                        ? "text-green-600"
+                                        : "text-red-600"
+                                }`}
+                            >
                                 {item.status === ItemStatus.ToStart
                                     ? "Por Iniciar"
+                                    : item.status === ItemStatus.InProgress
+                                    ? "En Progreso"
                                     : item.status === ItemStatus.Pending &&
-                                      item.started === new Date().toLocaleString()
-                                    ? "Realizandose"
-                                    : item.status === ItemStatus.Pending &&
-                                      item.started.split(",")[0] !== new Date().toLocaleString()
+                                      item.started.split(",")[0] !==
+                                          new Date().toLocaleString().split(",")[0] &&
+                                      new Date(item.endDate).getDate() > new Date().getDate()
                                     ? "Fecha de inicio establecida"
-                                    : "Terminado"}
+                                    : item.status === ItemStatus.Finished
+                                    ? "Terminado"
+                                    : "Atrasado"}
                             </span>
                         </p>
                         <p className="my-3">{item.task}</p>
                         <div className="flex gap-5">
-                            <div className="flex flex-col">
-                                <p>
-                                    Creado: <strong>{item.created}</strong>
-                                </p>
-                                <p>
-                                    Modificado: <strong>{item.modified}</strong>
-                                </p>
-                            </div>
                             <div>
                                 <p>
                                     Inicio: <strong>{item.started.split("-").reverse().join("-")}</strong>
@@ -45,20 +55,50 @@ function TaskList() {
                                     Término: <strong>{item.endDate.split("-").reverse().join("-")}</strong>
                                 </p>
                             </div>
+                            <div className="flex flex-col">
+                                <p>
+                                    Creado: <strong>{item.created}</strong>
+                                </p>
+                                <p>
+                                    Modificado: <strong>{item.modified}</strong>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-col gap-3 border-s-2 ps-1 border-black">
-                        <button type="button">
-                            <BellAlertIcon className="h-8 w-8 text-yellow-500"></BellAlertIcon>
+                        <button
+                            type="button"
+                            disabled={
+                                item.status === ItemStatus.Finished || item.status === ItemStatus.InProgress
+                                    ? true
+                                    : false
+                            }
+                            className="disabled:text-gray-700 text-yellow-500"
+                            onClick={() => dispatch({ type: "set-start-date", payload: { id: item.id } })}
+                        >
+                            <BellAlertIcon className="h-8 w-8"></BellAlertIcon>
                         </button>
-                        <button type="button">
-                            <PencilSquareIcon className="h-8 w-8 text-slate-600"></PencilSquareIcon>
+                        <button
+                            type="button"
+                            onClick={() => dispatch({ type: "set-id-editing", payload: { id: item.id } })}
+                            disabled={item.status === ItemStatus.Finished}
+                            className="disabled:text-gray-700 text-sky-800"
+                        >
+                            <PencilSquareIcon className="h-8 w-8 "></PencilSquareIcon>
                         </button>
-                        <button type="button">
+                        <button
+                            type="button"
+                            onClick={() => dispatch({ type: "remove-task", payload: { id: item.id } })}
+                        >
                             <TrashIcon className="h-8 w-8 text-red-700"></TrashIcon>
                         </button>
-                        <button type="button">
-                            <CheckCircleIcon className="h-8 w-8 text-green-700"></CheckCircleIcon>
+                        <button
+                            type="button"
+                            onClick={() => dispatch({ type: "set-complete-task", payload: { id: item.id } })}
+                            disabled={item.status === ItemStatus.Finished}
+                            className="disabled:text-gray-700 text-green-700"
+                        >
+                            <CheckCircleIcon className="h-8 w-8 "></CheckCircleIcon>
                         </button>
                     </div>
                 </li>

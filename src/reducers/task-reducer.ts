@@ -1,11 +1,16 @@
-import type { Task } from "../types";
+import { ItemStatus, type Task } from "../types";
 
 export type TaskActions =
     //actions
-    { type: "add-task"; payload: { newTask: Task } };
+    | { type: "add-task"; payload: { newTask: Task } }
+    | { type: "set-id-editing"; payload: { id: Task["id"] } }
+    | { type: "set-start-date"; payload: { id: Task["id"] } }
+    | { type: "remove-task"; payload: { id: Task["id"] } }
+    | { type: "set-complete-task"; payload: { id: Task["id"] } };
 
 export type TaskState = {
     tasks: Task[];
+    idEditing: Task["id"];
 };
 
 const handleLocal = () => {
@@ -15,13 +20,72 @@ const handleLocal = () => {
 
 export const initialState = {
     tasks: handleLocal(),
+    idEditing: "",
 };
 
 export const taskReducer = (state: TaskState = initialState, action: TaskActions) => {
     if (action.type === "add-task") {
+        let updatedTasks: Task[] = [];
+
+        if (state.idEditing) {
+            updatedTasks = state.tasks.map((item) =>
+                item.id === state.idEditing ? action.payload.newTask : item
+            );
+        } else {
+            updatedTasks = [...state.tasks, action.payload.newTask];
+        }
+
         return {
             ...state,
-            tasks: [...state.tasks, action.payload.newTask],
+            tasks: updatedTasks,
+            idEditing: "",
+        };
+    }
+
+    if (action.type === "set-id-editing") {
+        return {
+            ...state,
+            idEditing: action.payload.id,
+        };
+    }
+
+    if (action.type === "set-start-date") {
+        const updatedTasks = state.tasks.map((item) =>
+            item.id === action.payload.id
+                ? {
+                      ...item,
+                      started: new Date().toLocaleDateString().split("-").reverse().join("-"),
+                      status: ItemStatus.InProgress,
+                      modified: new Date().toLocaleString(),
+                  }
+                : item
+        );
+        return {
+            ...state,
+            tasks: updatedTasks,
+        };
+    }
+
+    if (action.type === "remove-task") {
+        return {
+            ...state,
+            tasks: state.tasks.filter((item) => item.id !== action.payload.id),
+        };
+    }
+
+    if (action.type === "set-complete-task") {
+        return {
+            ...state,
+            tasks: state.tasks.map((item) =>
+                item.id === action.payload.id
+                    ? {
+                          ...item,
+                          endDate: new Date().toLocaleDateString().split("-").reverse().join("-"),
+                          status: ItemStatus.Finished,
+                          modified: new Date().toLocaleString(),
+                      }
+                    : item
+            ),
         };
     }
 

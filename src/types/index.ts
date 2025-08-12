@@ -11,5 +11,6 @@ export type Task = {
 export enum ItemStatus {
     ToStart = "ToStart",
     Pending = "Pending",
+    InProgress = "Inprogress",
     Finished = "Finished",
 }

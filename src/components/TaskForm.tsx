@@ -1,10 +1,10 @@
-import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ItemStatus, type Task } from "../types";
 import { useTask } from "../hooks/useTask";
 
 function TaskForm() {
-    const { dispatch } = useTask();
+    const { state, dispatch } = useTask();
 
     const initialTask: Task = {
         id: uuidv4(),
@@ -32,6 +32,13 @@ function TaskForm() {
         return isTaskNotValid || isEndDateNotValid;
     }, [task]);
 
+    useEffect(() => {
+        const itemEditing = state.tasks.find((item) => item.id === state.idEditing);
+        if (itemEditing) {
+            setTask(itemEditing);
+        }
+    }, [state.tasks, state.idEditing]);
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -44,7 +51,7 @@ function TaskForm() {
     };
 
     return (
-        <form className="flex flex-col my-16" onSubmit={handleSubmit}>
+        <form className="flex flex-col" onSubmit={handleSubmit}>
             <label htmlFor="task" className="text-xl">
                 Agregue una tarea pendiente
             </label>
@@ -58,7 +65,7 @@ function TaskForm() {
                 value={task.task}
             ></textarea>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
                 <div>
                     <label htmlFor="started" className="text-xl">
                         Agregue una fecha de inicio
