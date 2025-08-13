@@ -1,3 +1,4 @@
+import { getTodayDate } from "../helpers";
 import { ItemStatus, type Task } from "../types";
 
 export type TaskActions =
@@ -6,7 +7,8 @@ export type TaskActions =
     | { type: "set-id-editing"; payload: { id: Task["id"] } }
     | { type: "set-start-date"; payload: { id: Task["id"] } }
     | { type: "remove-task"; payload: { id: Task["id"] } }
-    | { type: "set-complete-task"; payload: { id: Task["id"] } };
+    | { type: "set-complete-task"; payload: { id: Task["id"] } }
+    | { type: "verify-late-tasks" };
 
 export type TaskState = {
     tasks: Task[];
@@ -86,6 +88,20 @@ export const taskReducer = (state: TaskState = initialState, action: TaskActions
                       }
                     : item
             ),
+        };
+    }
+
+    if (action.type === "verify-late-tasks") {
+        const updatedTasks = state.tasks.map((item) =>
+            item.endDate <
+            getTodayDate("2025-08-20").toLocaleString().split(",")[0].split("-").reverse().join("-")
+                ? { ...item, status: ItemStatus.Late }
+                : item
+        );
+
+        return {
+            ...state,
+            tasks: updatedTasks,
         };
     }
 

@@ -13,4 +13,5 @@ export enum ItemStatus {
     Pending = "Pending",
     InProgress = "Inprogress",
     Finished = "Finished",
+    Late = "Late",
 }

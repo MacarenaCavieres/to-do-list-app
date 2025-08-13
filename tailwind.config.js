@@ -6,6 +6,13 @@ export default {
             maxHeight: {
                 customHeight: "500px",
             },
+            colors: {
+                secondary: "#B4E50D",
+                // primary: "#064232",
+                primary: "#FB4141",
+                // secondary: "#FFF5F2",
+                tertiary: "#F2EDD1",
+            },
         },
     },
     plugins: [],

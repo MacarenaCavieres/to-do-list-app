@@ -10,7 +10,7 @@ function TaskList() {
             {state.tasks.map((item) => (
                 <li
                     key={item.id}
-                    className="border border-black rounded-lg p-3 mb-5 flex justify-between gap-5 items-center"
+                    className="border-2 border-black rounded-lg shadow-lg p-3 mb-5 flex justify-between gap-5 items-center"
                 >
                     <div>
                         <p>
@@ -20,15 +20,17 @@ function TaskList() {
                                     item.status === ItemStatus.ToStart
                                         ? "text-blue-600"
                                         : item.status === ItemStatus.InProgress
-                                        ? "text-cyan-800"
+                                        ? "text-orange-600"
                                         : item.status === ItemStatus.Pending &&
                                           item.started.split(",")[0] !==
                                               new Date().toLocaleString().split(",")[0] &&
-                                          new Date(item.endDate).getDate() > new Date().getDate()
+                                          new Date(item.endDate) > new Date()
                                         ? "text-yellow-600"
                                         : item.status === ItemStatus.Finished
                                         ? "text-green-600"
-                                        : "text-red-600"
+                                        : item.status === ItemStatus.Late
+                                        ? "text-red-600"
+                                        : ""
                                 }`}
                             >
                                 {item.status === ItemStatus.ToStart
@@ -38,11 +40,13 @@ function TaskList() {
                                     : item.status === ItemStatus.Pending &&
                                       item.started.split(",")[0] !==
                                           new Date().toLocaleString().split(",")[0] &&
-                                      new Date(item.endDate).getDate() > new Date().getDate()
+                                      new Date(item.endDate) > new Date()
                                     ? "Fecha de inicio establecida"
                                     : item.status === ItemStatus.Finished
                                     ? "Terminado"
-                                    : "Atrasado"}
+                                    : item.status === ItemStatus.Late
+                                    ? "Atrasado"
+                                    : ""}
                             </span>
                         </p>
                         <p className="my-3">{item.task}</p>

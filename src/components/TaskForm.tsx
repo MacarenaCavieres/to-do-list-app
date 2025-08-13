@@ -8,7 +8,7 @@ function TaskForm() {
 
     const initialTask: Task = {
         id: uuidv4(),
-        status: ItemStatus.ToStart,
+        status: "",
         created: new Date().toLocaleString(),
         endDate: "",
         started: "",
@@ -22,7 +22,13 @@ function TaskForm() {
         setTask({
             ...task,
             [e.target.id]: e.target.value,
-            status: e.target.id === "started" || task.started ? ItemStatus.Pending : ItemStatus.ToStart,
+            status:
+                (e.target.id === "started" && new Date(e.target.value) > new Date()) ||
+                (task.started && new Date(task.started) > new Date())
+                    ? ItemStatus.Pending
+                    : e.target.id === "started" || task.started
+                    ? ItemStatus.InProgress
+                    : ItemStatus.ToStart,
         });
     };
 
@@ -77,6 +83,7 @@ function TaskForm() {
                         className="border border-black rounded-lg focus:outline-none p-2 mb-5 my-2 w-full"
                         onChange={handleChange}
                         value={task.started}
+                        min={new Date().toISOString().split("T")[0]}
                     />
                 </div>
                 <div>
@@ -90,6 +97,7 @@ function TaskForm() {
                         className="border border-black rounded-lg focus:outline-none p-2 mb-5 my-2 w-full"
                         onChange={handleChange}
                         value={task.endDate}
+                        min={new Date().toISOString().split("T")[0]}
                     />
                 </div>
             </div>

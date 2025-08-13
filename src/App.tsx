@@ -5,15 +5,19 @@ import { useTask } from "./hooks/useTask";
 import Graphic from "./components/Graphic";
 
 function App() {
-    const { state } = useTask();
+    const { state, dispatch } = useTask();
 
     useEffect(() => {
         localStorage.setItem("tasks", JSON.stringify(state.tasks));
     }, [state.tasks]);
 
+    useEffect(() => {
+        dispatch({ type: "verify-late-tasks" });
+    }, []);
+
     return (
         <>
-            <header className="text-4xl h-24 bg-slate-700 text-pink-200 uppercase font-bold flex justify-center items-center">
+            <header className="text-4xl h-24 bg-primary text-secondary uppercase font-bold flex justify-center items-center">
                 Lista de tareas
             </header>
 
@@ -21,12 +25,14 @@ function App() {
                 <TaskForm />
                 <TaskList />
             </main>
-            <section className="flex flex-col items-center justify-center py-16 bg-slate-700 text-pink-200">
-                <h3 className="mb-10 font-bold text-4xl">Tareas y sus estados</h3>
-                <div className="h-96 w-96 ">
-                    <Graphic />
-                </div>
-            </section>
+            {state.tasks.length !== 0 && (
+                <section className="flex flex-col items-center justify-center py-16 bg-primary text-secondary">
+                    <h3 className="mb-10 font-bold text-4xl">Tareas y sus estados</h3>
+                    <div className="h-96 w-96 ">
+                        <Graphic />
+                    </div>
+                </section>
+            )}
         </>
     );
 }

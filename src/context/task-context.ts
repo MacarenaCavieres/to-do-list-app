@@ -9,6 +9,7 @@ export type ContextProps = {
     quantityPending: number;
     quantityInProgress: number;
     quantityFinished: number;
+    quantityLate: number;
 };
 
 export const TaskContext = createContext<ContextProps>(null!);

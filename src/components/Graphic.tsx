@@ -5,14 +5,21 @@ import { useTask } from "../hooks/useTask";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Graphic() {
-    const { totalTasks, quantityToStart, quantityPending, quantityInProgress, quantityFinished } = useTask();
+    const {
+        totalTasks,
+        quantityToStart,
+        quantityPending,
+        quantityInProgress,
+        quantityFinished,
+        quantityLate,
+    } = useTask();
 
     const data = {
-        labels: ["Por Iniciar", "Fecha de inicio establecida", "En Progreso", "Finalizada"],
+        labels: ["Por Iniciar", "Fecha de inicio establecida", "En Progreso", "Finalizada", "Atrasada"],
         datasets: [
             {
-                data: [quantityToStart, quantityPending, quantityInProgress, quantityFinished],
-                backgroundColor: ["#facc15", "#f97316", "#3b82f6", "#22c55e"], // Colores para cada estado
+                data: [quantityToStart, quantityPending, quantityInProgress, quantityFinished, quantityLate],
+                backgroundColor: ["#2563eb", "#ca8a04", "#ea580c", "#16a34a", "#dc2626"], // Colores para cada estado
                 borderWidth: 1,
             },
         ],
@@ -20,7 +27,16 @@ function Graphic() {
 
     const options: ChartOptions<"pie"> = {
         plugins: {
-            legend: { position: "bottom" },
+            legend: {
+                position: "bottom",
+                labels: {
+                    color: "#000",
+                    font: {
+                        size: 14,
+                        weight: "lighter",
+                    },
+                },
+            },
             tooltip: {
                 callbacks: {
                     label: (context: TooltipItem<"pie">) => {

@@ -9,7 +9,7 @@ type Props = {
 export const TaskProvider = ({ children }: Props) => {
     const [state, dispatch] = useReducer(taskReducer, initialState);
 
-    const totalTasks = useMemo(() => state.tasks.length - 1, [state.tasks]);
+    const totalTasks = useMemo(() => state.tasks.length, [state.tasks]);
 
     const quantityToStart: number = useMemo(
         () =>
@@ -43,6 +43,14 @@ export const TaskProvider = ({ children }: Props) => {
             ),
         [state.tasks]
     );
+    const quantityLate: number = useMemo(
+        () =>
+            state.tasks.reduce(
+                (total: number, acc: Task) => (acc.status === ItemStatus.Late ? total + 1 : total + 0),
+                0
+            ),
+        [state.tasks]
+    );
 
     return (
         <TaskContext.Provider
@@ -54,6 +62,7 @@ export const TaskProvider = ({ children }: Props) => {
                 quantityPending,
                 quantityInProgress,
                 quantityFinished,
+                quantityLate,
             }}
         >
             {children}
