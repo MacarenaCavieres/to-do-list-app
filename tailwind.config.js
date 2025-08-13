@@ -6,12 +6,16 @@ export default {
             maxHeight: {
                 customHeight: "500px",
             },
+            fontFamily: {
+                roboto: "Roboto, sans-serif",
+            },
             colors: {
-                secondary: "#B4E50D",
-                // primary: "#064232",
-                primary: "#FB4141",
-                // secondary: "#FFF5F2",
-                tertiary: "#F2EDD1",
+                // primary: "#213448",
+                // secondary: "#DDDDDD",
+                // tertiary: "#DDDDDD",
+                primary: "#064232",
+                secondary: "#FFF5F2",
+                tertiary: "#DDDDDD",
             },
         },
     },

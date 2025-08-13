@@ -93,8 +93,8 @@ export const taskReducer = (state: TaskState = initialState, action: TaskActions
 
     if (action.type === "verify-late-tasks") {
         const updatedTasks = state.tasks.map((item) =>
-            item.endDate <
-            getTodayDate("2025-08-20").toLocaleString().split(",")[0].split("-").reverse().join("-")
+            (item.status === ItemStatus.ToStart || item.status === ItemStatus.Pending) &&
+            item.endDate < getTodayDate().toLocaleString().split(",")[0].split("-").reverse().join("-")
                 ? { ...item, status: ItemStatus.Late }
                 : item
         );

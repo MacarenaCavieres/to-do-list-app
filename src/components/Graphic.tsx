@@ -19,7 +19,7 @@ function Graphic() {
         datasets: [
             {
                 data: [quantityToStart, quantityPending, quantityInProgress, quantityFinished, quantityLate],
-                backgroundColor: ["#2563eb", "#ca8a04", "#ea580c", "#16a34a", "#dc2626"], // Colores para cada estado
+                backgroundColor: ["#2563eb", "#ca8a04", "#ea580c", "#16a34a", "#dc2626"],
                 borderWidth: 1,
             },
         ],
@@ -30,10 +30,11 @@ function Graphic() {
             legend: {
                 position: "bottom",
                 labels: {
-                    color: "#000",
+                    color: "#FFF5F2",
                     font: {
                         size: 14,
-                        weight: "lighter",
+                        weight: "normal",
+                        family: "Roboto",
                     },
                 },
             },

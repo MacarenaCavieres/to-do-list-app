@@ -1,6 +1,7 @@
 import { PencilSquareIcon, TrashIcon, CheckCircleIcon, BellAlertIcon } from "@heroicons/react/24/outline";
 import { useTask } from "../hooks/useTask";
 import { ItemStatus } from "../types";
+import { getTodayDate } from "../helpers";
 
 function TaskList() {
     const { state, dispatch } = useTask();
@@ -35,6 +36,9 @@ function TaskList() {
                             >
                                 {item.status === ItemStatus.ToStart
                                     ? "Por Iniciar"
+                                    : item.status === ItemStatus.InProgress &&
+                                      new Date(item.endDate) < getTodayDate()
+                                    ? "En Progreso - Atrasada"
                                     : item.status === ItemStatus.InProgress
                                     ? "En Progreso"
                                     : item.status === ItemStatus.Pending &&
