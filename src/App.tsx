@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import { useTask } from "./hooks/useTask";
+import Graphic from "./components/Graphic";
 
 function App() {
     const { state } = useTask();
@@ -20,6 +21,12 @@ function App() {
                 <TaskForm />
                 <TaskList />
             </main>
+            <section className="flex flex-col items-center justify-center py-16 bg-slate-700 text-pink-200">
+                <h3 className="mb-10 font-bold text-4xl">Tareas y sus estados</h3>
+                <div className="h-96 w-96 ">
+                    <Graphic />
+                </div>
+            </section>
         </>
     );
 }
